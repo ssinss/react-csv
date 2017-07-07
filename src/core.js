@@ -1,3 +1,5 @@
+import iconv from 'iconv-lite';
+
 export const isJsons = ((array) => Array.isArray(array) && array.every(
  row => (typeof row === 'object' && !(row instanceof Array))
 ));
@@ -30,7 +32,7 @@ export const jsons2csv = ((data, headers, separator) =>
 );
 
 export const string2csv = ((data, headers, separator) =>
-  (headers) ? `${headers.join(separator)}\n${data}`: data
+  (headers) ? iconv.encode(`${headers.join(separator)}\n${data}`,'euc-kr'): data
 );
 
 export const toCSV = (data, headers, separator) => {
@@ -41,6 +43,6 @@ export const toCSV = (data, headers, separator) => {
 };
 
 export const buildURI = ((data, headers, separator) => encodeURI(
-  `data:text/csv;charset=euc-kr,\uFEFF${toCSV(data, headers, separator)}`
+  `data:text/csv;charset=euc-kr,${toCSV(data, headers, separator)}`
  )
 );
