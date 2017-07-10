@@ -1,16 +1,16 @@
 import iconv from 'iconv-lite';
 
 export const isJsons = ((array) => Array.isArray(array) && array.every(
- row => (typeof row === 'object' && !(row instanceof Array))
+  row => (typeof row === 'object' && !(row instanceof Array))
 ));
 
 export const isArrays = ((array) => Array.isArray(array) && array.every(
- row => Array.isArray(row)
+  row => Array.isArray(row)
 ));
 
 export const jsonsHeaders = ((array) => Array.from(
- array.map(json => Object.keys(json))
- .reduce((a, b) => new Set([...a, ...b]), [])
+  array.map(json => Object.keys(json))
+  .reduce((a, b) => new Set([...a, ...b]), [])
 ));
 
 export const jsons2arrays = (jsons, headers) => {
@@ -19,30 +19,29 @@ export const jsons2arrays = (jsons, headers) => {
   return [headers, ...data];
 };
 
-export const joiner = ((data,separator = ',') =>
- data.map((row, index) => row.map((element) => element).join(separator)).join(`\n`)
+export const joiner = ((data, separator = ',') =>
+  data.map((row, index) => row.map((element) => element).join(separator)).join(`\n`)
 );
 
 export const arrays2csv = ((data, headers, separator) =>
- joiner(headers ? [headers, ...data] : data, separator)
+  joiner(headers ? [headers, ...data] : data, separator)
 );
 
 export const jsons2csv = ((data, headers, separator) =>
- joiner(jsons2arrays(data, headers), separator)
+  joiner(jsons2arrays(data, headers), separator)
 );
 
 export const string2csv = ((data, headers, separator) =>
-  (headers) ? iconv.encode(`${headers.join(separator)}\n${data}`,'euc-kr'): data
+  (headers) ? `${headers.join(separator)}\n${data}` : data
 );
 
 export const toCSV = (data, headers, separator) => {
- if (isJsons(data)) return jsons2csv(data, headers, separator);
- if (isArrays(data)) return arrays2csv(data, headers, separator);
- if (typeof data ==='string') return string2csv(data, headers, separator);
- throw new TypeError(`Data should be a "String", "Array of arrays" OR "Array of objects" `);
+  if (isJsons(data)) return jsons2csv(data, headers, separator);
+  if (isArrays(data)) return arrays2csv(data, headers, separator);
+  if (typeof data === 'string') return string2csv(data, headers, separator);
+  throw new TypeError(`Data should be a "String", "Array of arrays" OR "Array of objects" `);
 };
 
 export const buildURI = ((data, headers, separator) => encodeURI(
-  `data:text/csv;charset=euc-kr,${toCSV(data, headers, separator)}`
- )
-);
+  `data:text/csv;charset=euc-kr,${iconv.encode(toCSV(data, headers, separator,'euc-kr'))}`
+));
