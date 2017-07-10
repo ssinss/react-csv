@@ -43,5 +43,5 @@ export const toCSV = (data, headers, separator) => {
 };
 
 export const buildURI = ((data, headers, separator) => encodeURI(
-  `data:text/csv;charset=euc-kr,${iconv.encode(toCSV(data, headers, separator,'euc-kr'))}`
+  `data:text/csv;charset=euc-kr,${toCSV(data, headers, separator,'euc-kr')}`
 ));
